@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.ServletException;
@@ -106,68 +107,101 @@ public class ApplicationServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
+        try{
+            Application application = new Application();
         
-        Application application = new Application();
-        
-        application.setId(applicationMap.size() + 1);
-        application.setJobid(Integer.valueOf(request.getParameter("Id")));
-        application.setDateTimeSubmitted(Instant.now());
-        application.setActive(true);
-        boolean valid = true;
-        if (request.getAttribute("firstName") != null && !request.getAttribute("firstName").toString().isBlank()) {
-            application.setFirstName(request.getAttribute("firstName").toString());
-        }
-        else{
-            application.setFirstNameError("Please input a name. ");
-            valid = false;
-        }
-        
-        if (request.getAttribute("lastName") != null && !request.getAttribute("lastName").toString().isBlank()) {
-            application.setLastName(request.getAttribute("lastName").toString());
-        }
-        else{
-            application.setLastNameError("Please input a name. ");
-            valid = false;
-        }
-        
-        if (request.getAttribute("email") != null && !request.getAttribute("email").toString().isBlank()) {
-            application.setEmail(request.getAttribute("email").toString());
-        }
-        else{
-            application.setEmailError("Please input a valid email. ");
-            valid = false;
-        }
-        
-        if (request.getAttribute("phone") != null && request.getAttribute("phone").toString().length() >= 7) {
-            application.setPhoneNumber(Integer.valueOf(request.getAttribute("phone").toString()));
-        }
-        else{
-            application.setPhoneNumberError("Please input a valid phone number. ");
-            valid = false;
-        }
-        
-        if (request.getAttribute("startDate") != null && LocalDate.parse(request.getAttribute("startDate").toString()).isAfter(LocalDate.now())) {
-            application.setPhoneNumber(Integer.valueOf(request.getAttribute("phone").toString()));
-        }
-        else{
-            application.setPhoneNumberError("Please input a valid start date. ");
-            valid = false;
-        }
-        
-        Part filePart = request.getPart("attachment");
-        if (filePart != null && filePart.getSize() > 0) {
-            Attachment attachment = processAttachment(filePart);
-            if (attachment != null) {
-                application.setAttachment(attachment);
+            application.setId(applicationMap.size() + 1);
+            application.setJobid(Integer.valueOf(request.getParameter("Id")));
+            application.setDateTimeSubmitted(Instant.now());
+            application.setActive(true);
+            
+            application.setFirstNameError("");
+            application.setLastNameError("");
+            application.setEmailError("");
+            application.setPhoneNumberError("");
+            application.setStartDateError("");
+            application.setAttachmentError("");
+            
+            boolean valid = true;
+            if (request.getParameter("firstName") != null && !request.getParameter("firstName").isBlank()) {
+                application.setFirstName(request.getParameter("firstName"));
             }
-        }else{
-            valid = false;
+            else{
+                application.setFirstNameError("Please input a name. ");
+                valid = false;
+            }
+
+            if (request.getParameter("lastName") != null && !request.getParameter("lastName").isBlank()) {
+                application.setLastName(request.getParameter("lastName"));
+            }
+            else{
+                application.setLastNameError("Please input a name. ");
+                valid = false;
+            }
+
+            if (request.getParameter("email") != null && !request.getParameter("email").isBlank()) {
+                application.setEmail(request.getParameter("email"));
+            }
+            else{
+                application.setEmailError("Please input a valid email. ");
+                valid = false;
+            }
+
+            if (request.getParameter("phone") != null && request.getParameter("phone").length() >= 7) {
+                application.setPhoneNumber(Integer.valueOf(request.getParameter("phone")));
+            }
+            else{
+                application.setPhoneNumberError("Please input a valid phone number greater than 7 digits. ");
+                valid = false;
+            }
+
+            try{
+                LocalDate start = LocalDate.parse(request.getParameter("startDate"));
+                if (request.getParameter("startDate") != null && LocalDate.parse(request.getParameter("startDate")).isAfter(LocalDate.now().minusDays(1))) {
+                    application.setStartDate(LocalDate.parse(request.getParameter("startDate")));
+                }
+                else{
+                    throw new NumberFormatException();
+                }
+            }
+            catch(Exception e){
+                application.setStartDateError("Please input a valid start date. ");
+                valid = false;
+            }
+            
+            
+            try{
+                Part filePart = request.getPart("attachment");
+                if (filePart != null && filePart.getSize() > 0) {
+                    Attachment attachment = processAttachment(filePart);
+                    if (attachment != null) {
+                        application.setAttachment(attachment);
+                    }
+                }else{
+                    application.setAttachmentError("Must provide an attachment less than 20MB. ");
+                    valid = false;
+                    
+                }
+            }catch(Exception e){
+                request.getSession().setAttribute("error", e.toString() + Arrays.toString(e.getStackTrace()));
+                request.getRequestDispatcher("/WEB-INF/jsp/error/error.jsp").forward(request, response);
+            }
+            
+            if (valid) {
+                applicationMap.put(application.getId(), application);
+            }
+            else{
+                
+                request.getSession().setAttribute("application", application);
+            }
+            request.getSession().setAttribute("success", valid);
+            request.getRequestDispatcher("jobs?id=" + request.getParameter("Id")).forward(request, response);
         }
-        if (valid) {
-            applicationMap.put(application.getId(), application);
+        catch(Exception e) {
+            request.getSession().setAttribute("error", e.toString() + Arrays.toString(e.getStackTrace()));
+            request.getRequestDispatcher("/WEB-INF/jsp/error/error.jsp").forward(request, response);
         }
-        request.setAttribute("application", application);
-        request.getRequestDispatcher("/WEB-INF/jsp/view/jobs?id=" + request.getAttribute("Id").toString()).forward(request, response);
+        
     }
 
     /**
@@ -222,22 +256,22 @@ public class ApplicationServlet extends HttpServlet {
 
     private void viewApplication(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Application application = new Application();
-         if (request.getParameter("applicationId") != null) {
+         if (request.getParameter("id") != null) {
              try{
-                 application = applicationMap.get(Integer.valueOf(request.getParameter("applicationId")));
+                 application = applicationMap.get(Integer.valueOf(request.getParameter("id")));
                  request.setAttribute("application", application);
-                request.getRequestDispatcher("/WEB-INF/jsp/view/application.jsp").forward(request, response);
+                 request.getRequestDispatcher("/WEB-INF/jsp/view/application.jsp").forward(request, response);
                  
              }
              catch(Exception e){
-                listApplications(request, response);
+                request.getSession().setAttribute("error", e.toString() + Arrays.toString(e.getStackTrace()));
+                request.getRequestDispatcher("/WEB-INF/jsp/error/error.jsp").forward(request, response);
              }
          }
     }
 
     private void listApplications(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("applicationList", this.applicationMap.entrySet().toArray());
+        request.setAttribute("applicationList", this.applicationMap.values());
         request.getRequestDispatcher("/WEB-INF/jsp/view/applications.jsp").forward(request, response);
     }
-
 }

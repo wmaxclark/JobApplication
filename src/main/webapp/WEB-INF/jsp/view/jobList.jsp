@@ -31,8 +31,10 @@
             <div class="image-container">
                 <img alt="Medirevv Logo" src="images/20201119152943_MediRevv-Horizontal-Logo-Color.png">
             </div>
-            <div class="list">
-                <div class="listing-container col-md-10">
+            <div class="list row">
+                <div class="col-sm-0 col-md-1">
+                </div>
+                <div class="listing-container col-md-8">
 
                     <%
                         SortedSet<Job> jobs = (SortedSet)request.getAttribute("listings");

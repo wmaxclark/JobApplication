@@ -130,6 +130,9 @@ public class JobServlet extends HttpServlet {
                 request.getRequestDispatcher("/WEB-INF/jsp/error/error.jsp").forward(request, response);
             }
         }
+        if (request.getSession().getAttribute("application") != null) {
+            request.setAttribute("application", request.getSession().getAttribute("application"));
+        }
         int currentPage = 1;
         int listingsPerPage = 4;
         int totalPages = Jobs.size() / 4;

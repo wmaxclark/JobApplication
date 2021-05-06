@@ -57,7 +57,9 @@
                 </div>
                 <div class="col-sm-10 col-md-5">
                     <form id="applicationForm" action="<c:url value="/applications" />" method="POST" class="text-center" enctype="multipart/form-data" >
-                        
+                        <c:if test="${success}">
+                            <p>Application Submitted Successfully!</p>
+                        </c:if>
                         <input type="hidden" name="Id" value="${fn:escapeXml(job.id)}" />
                         
                         <label for="firstName">First Name:</label>
@@ -76,8 +78,8 @@
                         <input type="tel" name="phone" value="${fn:escapeXml(application.phoneNumber)}" />
                         <p class="text-danger">${fn:escapeXml(application.phoneNumberError)}</p>
                         
-                        <label for="resume">Resume:</label>
-                        <input type="file" name="attachment" />
+                        <label for="attachment">Resume:</label>
+                        <input type="file" name="attachment" value="${fn:escapeXml(application.attachment)}/>
                         <p class="text-danger">${fn:escapeXml(application.attachmentError)}</p>
                         
                         <label for="salary">Salary:</label>

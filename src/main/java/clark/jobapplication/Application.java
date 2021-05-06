@@ -10,7 +10,7 @@ import java.time.format.DateTimeParseException;
  *
  * @author William Clark
  */
-public class Application {
+public class Application implements Comparable {
 
     private int id;
     private int jobid;
@@ -335,6 +335,16 @@ public class Application {
     public void setStartDateError(String startDateError) {
         this.startDateError = startDateError;
     }
+
+    @Override
+    public int compareTo(Object otherObject) {
+        Application otherApplication = (Application)otherObject;
+        return this.dateTimeSubmitted.compareTo(otherApplication.dateTimeSubmitted);
+    }
     
+    @Override
+    public String toString() {
+        return "Application{firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + '}';
+    }
     
 }
