@@ -1,0 +1,50 @@
+/* 
+    Created on : May 4, 2021, 11:21:31 PM
+    Author     : William Clark
+*/
+
+.navigation-container{
+    width: 100%;
+    background-color: #00BBD2;
+}
+.list {
+    width: 100%;
+    height: 100%;
+    background-color: #F1F3F3;
+    margin: 0;
+}
+.listing-container {
+    margin: 0;
+}
+.listing-container > h3{
+    font-size: 24px;
+}
+.image-container {
+    
+    width: auto;
+    padding-left: 10%;
+}
+.image-container img{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    max-height: 64px;
+    max-width: auto;
+}
+.navbar{
+    width: auto;
+    padding-left: 10%;
+}
+.navbar a{
+    color: white;
+}
+.footer-container {
+    height: 100px;
+    background-color: #2B333A;
+}
+#applicationForm > * {
+    width: 48%;
+    margin-top: 10px;
+}
+#applicationForm .btn {
+    margin-bottom: 10px;
+}

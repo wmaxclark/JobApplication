@@ -5,9 +5,17 @@
         <servlet-name>JobServlet</servlet-name>
         <servlet-class>clark.jobapplication.JobServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ApplicationServlet</servlet-name>
+        <servlet-class>clark.jobapplication.ApplicationServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>JobServlet</servlet-name>
         <url-pattern>/jobs</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ApplicationServlet</servlet-name>
+        <url-pattern>/applications</url-pattern>
     </servlet-mapping>
     <jsp-config>
         <jsp-property-group>
@@ -15,10 +23,16 @@
             <url-pattern>*.jspf</url-pattern>
             <page-encoding>UTF-8</page-encoding>
             <scripting-invalid>false</scripting-invalid>
-            <include-prelude>/WEB-INF/jspf/base.jspf</include-prelude>
-            <include-prelude>/WEB-INF/jspf/dbConnection.jspf</include-prelude>
+            <include-prelude>/WEB-INF/jsp/base.jspf</include-prelude>
             <trim-directive-whitespaces>true</trim-directive-whitespaces>
             <default-content-type>text/html</default-content-type>
         </jsp-property-group>
     </jsp-config>
+    <session-config>
+    <session-timeout>30</session-timeout>
+    <cookie-config>
+        <http-only>true</http-only>
+    </cookie-config>
+    <tracking-mode>COOKIE</tracking-mode>
+</session-config>
 </web-app>

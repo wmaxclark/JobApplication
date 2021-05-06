@@ -1,12 +1,15 @@
 package clark.jobapplication;
 
+import java.sql.Date;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 /**
  *
  * @author William Clark
  */
-public class Job {
+public class Job implements Comparable{
 
     private int id;
     private boolean active;
@@ -19,11 +22,12 @@ public class Job {
     private String experience;
     private String wageCategory;
     private double salary;
+    private String description;
 
-    public Job(int id, boolean active, LocalDate dateCreated, String title, String city, String state, boolean fullTime, String department, String experience, String wageCategory, double salary) {
+    public Job(int id, boolean active, String dateCreated, String title, String city, String state, boolean fullTime, String department, String experience, String wageCategory, double salary, String description) {
         this.id = id;
         this.active = active;
-        this.dateCreated = dateCreated;
+        this.setDateCreated(dateCreated);
         this.title = title;
         this.city = city;
         this.state = state;
@@ -32,6 +36,7 @@ public class Job {
         this.experience = experience;
         this.wageCategory = wageCategory;
         this.salary = salary;
+        this.description = description;
     }
 
     public Job() {
@@ -46,8 +51,10 @@ public class Job {
         experience = "";
         wageCategory = "";
         salary = 0.0;
+        description = "";
     }
 
+    
     public int getId() {
         return id;
     }
@@ -64,10 +71,32 @@ public class Job {
         this.active = active;
     }
 
+    public Date getNewDateCreated() {
+        return java.sql.Date.valueOf(dateCreated);
+    }
+
+    /**
+     * @return the dateCreated
+     */
     public LocalDate getDateCreated() {
         return dateCreated;
     }
 
+    /**
+     * @param dateCreated the dateCreated to set
+     */
+    public void setDateCreated(String dateCreated) {
+        DateTimeFormatter formatterInput = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        try {
+            this.dateCreated = LocalDate.parse(dateCreated, formatterInput);
+        } catch (DateTimeParseException | NullPointerException e) {
+            this.dateCreated = null;
+        }
+    }
+
+    /**
+     * @param dateCreated the dateCreated to set
+     */
     public void setDateCreated(LocalDate dateCreated) {
         this.dateCreated = dateCreated;
     }
@@ -135,6 +164,34 @@ public class Job {
     public void setSalary(double salary) {
         this.salary = salary;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return "Job{title=" + title + ", city=" + city + ", state=" + state + ", department=" + department + ", active=" + active + '}';
+    }
+
+    @Override
+    public int compareTo(Object otherObject) {
+        Job otherJob = (Job)otherObject;
+        if (this.dateCreated.equals(otherJob.dateCreated)) {
+            return this.title.compareTo(otherJob.title);
+        }
+        else{
+            return this.dateCreated.compareTo(otherJob.dateCreated);
+        }
+    }
+
+    /**
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }
