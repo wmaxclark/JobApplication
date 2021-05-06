@@ -148,7 +148,7 @@ public class ApplicationServlet extends HttpServlet {
             }
 
             if (request.getParameter("phone") != null && request.getParameter("phone").length() >= 7) {
-                application.setPhoneNumber(Integer.valueOf(request.getParameter("phone")));
+                application.setPhoneNumber(request.getParameter("phone").replaceAll("[^\\d.]", ""));
             }
             else{
                 application.setPhoneNumberError("Please input a valid phone number greater than 7 digits. ");
@@ -183,7 +183,6 @@ public class ApplicationServlet extends HttpServlet {
                     
                 }
             }catch(Exception e){
-                request.getSession().setAttribute("error", e.toString() + Arrays.toString(e.getStackTrace()));
                 request.getRequestDispatcher("/WEB-INF/jsp/error/error.jsp").forward(request, response);
             }
             
@@ -192,13 +191,12 @@ public class ApplicationServlet extends HttpServlet {
             }
             else{
                 
-                request.getSession().setAttribute("application", application);
+                request.setAttribute("application", application);
             }
-            request.getSession().setAttribute("success", valid);
+            request.setAttribute("success", valid);
             request.getRequestDispatcher("jobs?id=" + request.getParameter("Id")).forward(request, response);
         }
         catch(Exception e) {
-            request.getSession().setAttribute("error", e.toString() + Arrays.toString(e.getStackTrace()));
             request.getRequestDispatcher("/WEB-INF/jsp/error/error.jsp").forward(request, response);
         }
         

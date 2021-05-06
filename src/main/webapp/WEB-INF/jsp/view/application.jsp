@@ -28,9 +28,9 @@
                 <div class="col-sm-0 col-md-1">
                 </div>
                 <div class="listing-container col-md-8">
-                    <p>${fn:escapeXml(application.firstName)}&nbsp;${fn:escapeXml(application.lastName)}</p>
+                    <h2>${fn:escapeXml(application.firstName)}&nbsp;${fn:escapeXml(application.lastName)}</h2>
                     <p>${fn:escapeXml(application.email)}</p>
-                    <p>${fn:escapeXml(application.phoneNumber)}</p>
+                    <p><c:out value="(${fn:substring(application.phoneNumber, 0, 3)}) ${fn:substring(application.phoneNumber, 3, 6)}-${fn:substring(application.phoneNumber, 6, fn:length(application.phoneNumber))}"/></p>
                     <c:if test="${application.attachment.name} != null}">
                         <a href="
                             <c:url value="/applications">
@@ -46,7 +46,7 @@
                         </p> 
                     </c:if>
                     <c:if test="${!(application.salary != null && application.salary != 0)}">
-                        <p>Not Specified
+                        <p>Desired Salary Not Specified
                         </p> 
                     </c:if>
                     <p>${application.startDate}</p> 

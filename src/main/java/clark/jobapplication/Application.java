@@ -22,7 +22,7 @@ public class Application implements Comparable {
     private String lastNameError;
     private String email;
     private String emailError;
-    private int phoneNumber;
+    private String phoneNumber;
     private String phoneNumberError;
     private Attachment attachment;
     private String attachmentError;
@@ -31,7 +31,7 @@ public class Application implements Comparable {
     private LocalDate startDate;
     private String startDateError;
 
-    public Application(int id, int jobid, Instant dateTimeSubmitted, boolean active, String firstName, String firstNameError, String lastName, String lastNameError, String email, String emailError, int phoneNumber, String phoneNumberError, Attachment attachment, String attachmentError, double salary, String salaryError, LocalDate startDate, String startDateError) {
+    public Application(int id, int jobid, Instant dateTimeSubmitted, boolean active, String firstName, String firstNameError, String lastName, String lastNameError, String email, String emailError, String phoneNumber, String phoneNumberError, Attachment attachment, String attachmentError, double salary, String salaryError, LocalDate startDate, String startDateError) {
         this.id = id;
         this.jobid = jobid;
         this.dateTimeSubmitted = dateTimeSubmitted;
@@ -63,7 +63,7 @@ public class Application implements Comparable {
         this.lastNameError = "";
         this.email = "";
         this.emailError = "";
-        this.phoneNumber = 0;
+        this.phoneNumber = "";
         this.phoneNumberError = "";
         this.attachment = null;
         this.attachmentError = "";
@@ -227,14 +227,14 @@ public class Application implements Comparable {
     /**
      * @return the phoneNumber
      */
-    public int getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
     /**
      * @param phoneNumber the phoneNumber to set
      */
-    public void setPhoneNumber(int phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
